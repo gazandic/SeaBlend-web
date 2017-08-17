@@ -4,6 +4,14 @@
 # the maximum value specified for Puma. Default is set to 5 threads for minimum
 # and maximum; this matches the default thread size of Active Record.
 #
+
+# require "active_record"
+#
+# cwd = File.dirname(__FILE__)+"/.."
+# ActiveRecord::Base.connection.disconnect! rescue ActiveRecord::ConnectionNotEstablished
+# ActiveRecord::Base.establish_connection(ENV["DATABASE_URL"] || YAML.load_file("#{cwd}/config/database.yml")[ENV["RACK_ENV"]])
+# ActiveRecord::Base.verify_active_connections!
+
 threads_count = ENV.fetch("RAILS_MAX_THREADS") { 5 }
 threads threads_count, threads_count
 
