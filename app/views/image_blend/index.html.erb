@@ -1,0 +1,84 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.css" />
+<link rel="stylesheet" href="/assets/image_blend.scss" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js"></script>
+<script src="/assets/jquery-3.2.1.min.js"></script>
+<script src="/assets/base64js.min.js"></script>
+<div id="cropimgcontainer">
+  <img id="image">
+</div>
+<button id="generate" onclick="gen()"> Generate </button>
+<input id="image-input" type="file"/>
+
+<style>
+  img {
+    max-width: 100%; /* This rule is very important, please do not ignore this! */
+  }
+  #cropimgcontainer {
+    max-width: 200px;
+    max-height: 200px;
+  }
+</style>
+<script>
+
+$body = $("body");
+
+$(document).on({
+    ajaxStart: function() { $body.addClass("loading");},
+     ajaxStop: function() { $body.removeClass("loading"); }
+});
+
+var x = 0, y = 0, width = 0, height = 0, rotate = 0, scaleX = 0, scaleY = 0;
+var image = document.getElementById('image');
+var cropper = new Cropper(image, {
+  aspectRatio: 9 / 9,
+  crop: function(e) {
+    x = Math.round(e.detail.x);
+    y = Math.round(e.detail.y);
+    width = Math.round(e.detail.width);
+    height = Math.round(e.detail.height);
+    rotate = e.detail.rotate;
+    scaleX = e.detail.scaleX;
+    scaleY = e.detail.scaleY;
+  }
+});
+var setted = false;
+var binaryString = "";
+var arrayBuffer = "";
+document.querySelector('#image-input').addEventListener('change', function() {
+    setted = true;
+    var reader = new FileReader();
+    var reader2 = new FileReader();
+    reader.onload = function() {
+      arrayBuffer = this.result;
+      // array = new Uint8Array(arrayBuffer),
+      // binaryString = String.fromCharCode.apply(null, array);
+      cropper.replace(arrayBuffer);
+    }
+    reader.readAsDataURL(this.files[0]);
+}, false);
+
+function gen() {
+  if (!setted) return;
+  $.ajax({
+      type: 'POST',
+      url: '/image_blend',
+      dataType:'json',
+      contentType: 'application/json',
+      async: true,
+      processData: false,
+      data: JSON.stringify({ x: x, y:y, width: width, img: arrayBuffer, height: height}),
+      success: function (response) {
+        // var base64 = base64js.fromByteArray(response['data']);
+        var link = document.createElement("a");
+        link.visible = false;
+        link.href = response['data'];
+        link.download = "result.jpg";
+        link.click();
+      }, error: function(xhr){
+          alert("An error occured: " + xhr.status + " " + xhr.statusText);
+      },
+  });
+}
+</script>
+
+<div class="modal"></div>
