@@ -19,7 +19,6 @@
           </header>
 
           <footer>
-            <input id="image-input" type="file" style="visibility: hidden"/>
             <ul class="icons">
               <li><a id="generate" onclick="gen()" class="fa-download"></a></li>
               <li><a onclick="upload()" class="fa-upload">Upload</a></li>
@@ -36,6 +35,7 @@
 
     </div>
 
+    <input id="image-input" type="file" style="visibility: hidden"/>
     <div class="modal"></div>
 
     <script>
@@ -57,16 +57,14 @@
   }
   @media screen and (max-width: 480px) {
     #cropimgcontainer {
-      max-width: 300px;
-      max-height: 300px;
+      max-width: 400px;
+      max-height: 400px;
     }
   }
 </style>
 <script>
 
 $body = $("body");
-
-document.getElementById("generate").style.border = "solid 1px #f8fcff";
 $(document).on({
     ajaxStart: function() { $body.addClass("loading");},
      ajaxStop: function() { $body.removeClass("loading"); }
@@ -111,7 +109,6 @@ function gen() {
     alert("butuh upload terlebih dahulu");
     return;
   }
-  document.getElementById("generate").style.border = "solid 1px #c8cccf";
   $.ajax({
       type: 'POST',
       url: '/image_blend',

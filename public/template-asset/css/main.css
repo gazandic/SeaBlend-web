@@ -705,7 +705,8 @@
 		max-width: 100%;
 		min-width: 27em;
 		padding: 4.5em 3em 3em 3em ;
-		background: #ffffff;
+		background-color:rgba(255, 255, 255, 0.66);
+		/*background: #ffffff;*/
 		border-radius: 4px;
 		cursor: default;
 		opacity: 0.95;
