@@ -1,27 +1,72 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.css" />
 <link rel="stylesheet" href="/assets/image_blend.scss" />
+<link rel="stylesheet" href="/template-asset/css/main.css" />
+<noscript><link rel="stylesheet" href="/template-asset/css/noscript.css" /></noscript>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js"></script>
 <script src="/assets/jquery-3.2.1.min.js"></script>
 <script src="/assets/base64js.min.js"></script>
-<div id="cropimgcontainer">
-  <img id="image">
-</div>
-<button id="generate" onclick="gen()"> Generate </button>
-<input id="image-input" type="file"/>
+<body class="is-loading">
+    <div id="wrapper">
+        <section id="main">
+          <header>
+            <span class="avatar">
+            <div id="cropimgcontainer">
+              <img id="image"/>
+            </div>
+            </span>
+            <h1>DukungBasket!</h1>
+            <p>SEA Games 2017</p>
+          </header>
+
+          <footer>
+            <input id="image-input" type="file" style="visibility: hidden"/>
+            <ul class="icons">
+              <li><a id="generate" onclick="gen()" class="fa-download"></a></li>
+              <li><a onclick="upload()" class="fa-upload">Upload</a></li>
+            </ul>
+          </footer>
+        </section>
+
+      <!-- Footer -->
+        <footer id="footer">
+          <ul class="copyright">
+            <li>&copy; VRAL team</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+          </ul>
+        </footer>
+
+    </div>
+
+    <div class="modal"></div>
+
+    <script>
+      if ('addEventListener' in window) {
+        window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-loading\b/, ''); });
+        document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+      }
+    </script>
+
+</body>
 
 <style>
   img {
     max-width: 100%; /* This rule is very important, please do not ignore this! */
   }
   #cropimgcontainer {
-    max-width: 200px;
-    max-height: 200px;
+    max-width: 500px;
+    max-height: 500px;
+  }
+  @media screen and (max-width: 480px) {
+    #cropimgcontainer {
+      max-width: 300px;
+      max-height: 300px;
+    }
   }
 </style>
 <script>
 
 $body = $("body");
 
+document.getElementById("generate").style.border = "solid 1px #f8fcff";
 $(document).on({
     ajaxStart: function() { $body.addClass("loading");},
      ajaxStop: function() { $body.removeClass("loading"); }
@@ -44,6 +89,10 @@ var cropper = new Cropper(image, {
 var setted = false;
 var binaryString = "";
 var arrayBuffer = "";
+
+function upload() {
+  document.querySelector('#image-input').click();
+}
 document.querySelector('#image-input').addEventListener('change', function() {
     setted = true;
     var reader = new FileReader();
@@ -58,7 +107,11 @@ document.querySelector('#image-input').addEventListener('change', function() {
 }, false);
 
 function gen() {
-  if (!setted) return;
+  if (!setted) {
+    alert("butuh upload terlebih dahulu");
+    return;
+  }
+  document.getElementById("generate").style.border = "solid 1px #c8cccf";
   $.ajax({
       type: 'POST',
       url: '/image_blend',
@@ -80,5 +133,3 @@ function gen() {
   });
 }
 </script>
-
-<div class="modal"></div>
